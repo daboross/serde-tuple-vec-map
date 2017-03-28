@@ -1,0 +1,18 @@
+language: rust
+sudo: false
+rust:
+- stable
+- beta
+- nightly
+cache: cargo
+before_script:
+- export PATH="$PATH:$HOME/.cargo/bin"
+- which rustfmt || cargo install rustfmt
+script:
+- cargo build --verbose
+- cargo fmt --verbose -- --write-mode=diff
+- cargo test --verbose "${CARGO_ARGS[@]}"
+matrix:
+  include:
+  - rust: nightly
+    env: CARGO_ARGS=("--no-default-features")

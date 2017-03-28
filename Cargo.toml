@@ -1,0 +1,32 @@
+[package]
+name = "serde-tuple-vec-map"
+version = "0.0.1"
+authors = ["Dabo Ross <daboross@daboross.net>"]
+description = "Deserialize a serialized map to Vec<(K, V)> using serde"
+
+documentation = "http://dabo.guru/rust/serde-tuple-vec-map/"
+repository = "https://github.com/daboross/serde-tuple-vec-map"
+
+readme = "README.md"
+
+keywords = ["serde", "map", "vec", "array", "tuple"]
+categories = ["encoding"]
+license = "MIT"
+
+[lib]
+name = "tuple_vec_map"
+path = "src/lib.rs"
+
+[features]
+std = []
+default = ["std"]
+
+[badges]
+travis-ci = { repository = "daboross/serde-tuple-vec-map" }
+
+[dependencies]
+serde = { version = "0.9", default-features = false }
+
+[dev-dependencies]
+serde_derive = "0.9"
+serde_json = "0.9"
