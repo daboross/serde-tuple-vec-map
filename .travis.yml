@@ -7,7 +7,7 @@ rust:
 cache: cargo
 before_script:
 - export PATH="$PATH:$HOME/.cargo/bin"
-- which rustfmt || cargo install rustfmt
+- which rustfmt || cargo install rustfmt --vers 0.8.1
 script:
 - cargo build --verbose
 - cargo fmt --verbose -- --write-mode=diff

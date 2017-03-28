@@ -38,8 +38,7 @@ fn deserialize_some_data() {
         }
     });
 
-    let deserialized = TestData::deserialize(data)
-        .expect("expected data to deserialize successfully");
+    let deserialized = TestData::deserialize(data).expect("expected successful deserialization");
 
     // Note: This also tests that the data is kept in the same order as in the JSON.
     // I *think* that's what we want to do...
