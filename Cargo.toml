@@ -1,6 +1,6 @@
 [package]
 name = "serde-tuple-vec-map"
-version = "0.1.1-dev"
+version = "0.2.0"
 authors = ["David Ross <daboross@daboross.net>"]
 description = "Deserialize a serialized map to Vec<(K, V)> using serde"
 
