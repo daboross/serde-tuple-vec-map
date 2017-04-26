@@ -7,11 +7,12 @@ rust:
 cache: cargo
 before_script:
 - export PATH="$PATH:$HOME/.cargo/bin"
-- which rustfmt || cargo install rustfmt --vers 0.8.1
+- which rustfmt || cargo install rustfmt --vers 0.7.1
 script:
+- rustfmt --version
 - cargo build --verbose
-- cargo fmt --verbose -- --write-mode=diff
 - cargo test --verbose "${CARGO_ARGS[@]}"
+- cargo fmt --verbose -- --write-mode=diff
 matrix:
   include:
   - rust: nightly
