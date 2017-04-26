@@ -41,27 +41,24 @@ use core::marker::PhantomData;
 use core::{cmp, fmt};
 
 use serde::{Serializer, Deserializer, Serialize, Deserialize};
-use serde::de::{MapVisitor, Visitor};
+use serde::de::{MapAccess, Visitor};
 
 #[cfg(not(feature = "std"))]
 use collections::Vec;
 
-struct TupleVecMapVisitor<K: Deserialize, V: Deserialize> {
+struct TupleVecMapVisitor<K, V> {
     marker: PhantomData<Vec<(K, V)>>,
 }
 
-impl<K, V> TupleVecMapVisitor<K, V>
-    where K: Deserialize,
-          V: Deserialize
-{
+impl<K, V> TupleVecMapVisitor<K, V> {
     pub fn new() -> Self {
         TupleVecMapVisitor { marker: PhantomData }
     }
 }
 
-impl<K, V> Visitor for TupleVecMapVisitor<K, V>
-    where K: Deserialize,
-          V: Deserialize
+impl<'de, K, V> Visitor<'de> for TupleVecMapVisitor<K, V>
+    where K: Deserialize<'de>,
+          V: Deserialize<'de>
 {
     type Value = Vec<(K, V)>;
 
@@ -75,12 +72,12 @@ impl<K, V> Visitor for TupleVecMapVisitor<K, V>
     }
 
     #[inline]
-    fn visit_map<T>(self, mut visitor: T) -> Result<Vec<(K, V)>, T::Error>
-        where T: MapVisitor
+    fn visit_map<T>(self, mut access: T) -> Result<Vec<(K, V)>, T::Error>
+        where T: MapAccess<'de>
     {
-        let mut values = Vec::with_capacity(cmp::min(visitor.size_hint().0, 4069));
+        let mut values = Vec::with_capacity(cmp::min(access.size_hint().unwrap_or(0), 4069));
 
-        while let Some((key, value)) = visitor.visit()? {
+        while let Some((key, value)) = access.next_entry()? {
             values.push((key, value));
         }
 
@@ -99,11 +96,11 @@ pub fn serialize<K, V, S>(data: &Vec<(K, V)>, serializer: S) -> Result<S::Ok, S:
 
 /// Deserialize to a Vec<(K, V)> as if it were a HashMap<K, V>.
 ///
-/// Note: does not allocate a hashmap, deserializes directly to the Vec.
-pub fn deserialize<K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
-    where D: Deserializer,
-          K: Deserialize,
-          V: Deserialize
+/// This directly deserializes into the returned vec, with no hashmap intermediate.
+pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
+    where D: Deserializer<'de>,
+          K: Deserialize<'de>,
+          V: Deserialize<'de>
 {
     deserializer.deserialize_map(TupleVecMapVisitor::new())
 }

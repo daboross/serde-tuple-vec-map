@@ -1,6 +1,6 @@
 [package]
 name = "serde-tuple-vec-map"
-version = "0.1.0"
+version = "0.1.1-dev"
 authors = ["Dabo Ross <daboross@daboross.net>"]
 description = "Deserialize a serialized map to Vec<(K, V)> using serde"
 
@@ -25,8 +25,8 @@ default = ["std"]
 travis-ci = { repository = "daboross/serde-tuple-vec-map" }
 
 [dependencies]
-serde = { version = "0.9", default-features = false }
+serde = { version = "1.0", default-features = false }
 
 [dev-dependencies]
-serde_derive = "0.9"
-serde_json = "0.9"
+serde_derive = "1.0"
+serde_json = "1.0"
