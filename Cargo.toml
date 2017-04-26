@@ -1,11 +1,11 @@
 [package]
 name = "serde-tuple-vec-map"
 version = "0.1.1-dev"
-authors = ["Dabo Ross <daboross@daboross.net>"]
+authors = ["David Ross <daboross@daboross.net>"]
 description = "Deserialize a serialized map to Vec<(K, V)> using serde"
 
 documentation = "http://dabo.guru/rust/tuple-vec-map/"
-repository = "https://github.com/daboross/serde-tuple-vec-map"
+repository = "https://github.com/daboross/serde-tuple-vec-map/"
 
 readme = "README.md"
 
