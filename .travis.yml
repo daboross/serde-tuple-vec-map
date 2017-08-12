@@ -7,12 +7,28 @@ rust:
 cache: cargo
 before_script:
 - export PATH="$PATH:$HOME/.cargo/bin"
-- which rustfmt || cargo install rustfmt --vers 0.7.1
+- |
+  # cargo install rustfmt
+  if [[ $TRAVIS_RUST_VERSION = nightly ]]; then
+      echo "formatting enabled"
+      if which rustfmt > /dev/null && [[ $(rustfmt --version) != 0.2.1-nightly* ]]; then
+          echo "uninstalling old rustfmt"
+          cargo uninstall rustfmt;
+      fi
+      if ! which rustfmt > /dev/null; then
+          echo "installing rustfmt"
+          cargo install rustfmt-nightly --vers 0.2.1 -j 1
+      fi
+  fi
 script:
 - rustfmt --version
 - cargo build --verbose
 - cargo test --verbose "${CARGO_ARGS[@]}"
-- cargo fmt --verbose -- --write-mode=diff
+- |
+  # cargo fmt
+  if [[ $TRAVIS_RUST_VERSION = nightly ]]; then
+      cargo fmt --verbose -- --write-mode=diff
+  fi
 matrix:
   include:
   - rust: nightly

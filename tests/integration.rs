@@ -17,7 +17,7 @@ extern crate tuple_vec_map;
 use serde::Deserialize;
 
 #[cfg(not(feature = "std"))]
-use collections::{Vec, String};
+use collections::{String, Vec};
 #[cfg(not(feature = "std"))]
 use collections::borrow::ToOwned;
 

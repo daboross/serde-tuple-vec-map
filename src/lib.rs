@@ -40,7 +40,7 @@ mod core {
 use core::marker::PhantomData;
 use core::{cmp, fmt};
 
-use serde::{Serializer, Deserializer, Serialize, Deserialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde::de::{MapAccess, Visitor};
 
 #[cfg(not(feature = "std"))]
@@ -52,13 +52,16 @@ struct TupleVecMapVisitor<K, V> {
 
 impl<K, V> TupleVecMapVisitor<K, V> {
     pub fn new() -> Self {
-        TupleVecMapVisitor { marker: PhantomData }
+        TupleVecMapVisitor {
+            marker: PhantomData,
+        }
     }
 }
 
 impl<'de, K, V> Visitor<'de> for TupleVecMapVisitor<K, V>
-    where K: Deserialize<'de>,
-          V: Deserialize<'de>
+where
+    K: Deserialize<'de>,
+    V: Deserialize<'de>,
 {
     type Value = Vec<(K, V)>;
 
@@ -73,7 +76,8 @@ impl<'de, K, V> Visitor<'de> for TupleVecMapVisitor<K, V>
 
     #[inline]
     fn visit_map<T>(self, mut access: T) -> Result<Vec<(K, V)>, T::Error>
-        where T: MapAccess<'de>
+    where
+        T: MapAccess<'de>,
     {
         let mut values = Vec::with_capacity(cmp::min(access.size_hint().unwrap_or(0), 4069));
 
@@ -87,9 +91,10 @@ impl<'de, K, V> Visitor<'de> for TupleVecMapVisitor<K, V>
 
 /// Serialize a Vec<(K, V)> as if it were a HashMap<K, V>.
 pub fn serialize<K, V, S>(data: &Vec<(K, V)>, serializer: S) -> Result<S::Ok, S::Error>
-    where S: Serializer,
-          K: Serialize,
-          V: Serialize
+where
+    S: Serializer,
+    K: Serialize,
+    V: Serialize,
 {
     serializer.collect_map(data.into_iter().map(|x| (&x.0, &x.1)))
 }
@@ -98,9 +103,10 @@ pub fn serialize<K, V, S>(data: &Vec<(K, V)>, serializer: S) -> Result<S::Ok, S:
 ///
 /// This directly deserializes into the returned vec, with no hashmap intermediate.
 pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
-    where D: Deserializer<'de>,
-          K: Deserialize<'de>,
-          V: Deserialize<'de>
+where
+    D: Deserializer<'de>,
+    K: Deserialize<'de>,
+    V: Deserialize<'de>,
 {
     deserializer.deserialize_map(TupleVecMapVisitor::new())
 }
