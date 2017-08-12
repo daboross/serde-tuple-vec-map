@@ -11,7 +11,7 @@ before_script:
   # cargo install rustfmt
   if [[ $TRAVIS_RUST_VERSION = nightly ]]; then
       echo "formatting enabled"
-      if which rustfmt > /dev/null && [[ $(rustfmt --version) != 0.2.1-nightly* ]]; then
+      if which rustfmt > /dev/null && [[ $(rustup run nightly rustfmt --version) != 0.2.1-nightly* ]]; then
           echo "uninstalling old rustfmt"
           cargo uninstall rustfmt;
       fi
@@ -21,7 +21,11 @@ before_script:
       fi
   fi
 script:
-- rustfmt --version
+- |
+  # rustfmt --version 
+  if [[ $TRAVIS_RUST_VERSION = nightly ]]; then
+      rustup run nightly rustfmt --version
+  fi
 - cargo build --verbose
 - cargo test --verbose "${CARGO_ARGS[@]}"
 - |
