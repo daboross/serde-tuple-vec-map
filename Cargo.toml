@@ -15,9 +15,6 @@ categories = ["encoding"]
 
 include = ["Cargo.toml", "src/**/*", "tests/**/*", "examples/**/*", "LICENSE", "README.md"]
 
-[badges]
-travis-ci = { repository = "daboross/serde-tuple-vec-map" }
-
 [lib]
 name = "tuple_vec_map"
 path = "src/lib.rs"

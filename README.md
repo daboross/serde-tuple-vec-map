@@ -32,4 +32,4 @@ Full usage example in `tests/integration.rs`, documentation at https://docs.rs/s
 [travis-builds]: https://travis-ci.org/daboross/serde-tuple-vec-map
 [serde]: https://github.com/serde-rs/serde/
 [cratesio-badge]: http://meritbadge.herokuapp.com/serde-tuple-vec-map
-[cratesio-crate]: https://crates.io/crates/serde-tuple-vec-map
+[cratesio-page]: https://crates.io/crates/serde-tuple-vec-map
