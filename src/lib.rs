@@ -1,9 +1,7 @@
 //! Deserializing maps to tuple-vecs.
 //!
-//! Don't waste space and time making a HashMap when you will never use it!
-//!
 //! To use, just include a `Vec<(String, ...)>` in your struct instead of a `HashMap<String, ...>`
-//! and tag it with `#[serde(with = "tuple_vec_map")`!
+//! and tag it with `#[serde(with = "tuple_vec_map")`:
 //!
 //! ```
 //! # extern crate serde;
@@ -19,7 +17,7 @@
 //! # fn main() {}
 //! ```
 //! That's it! Now your structure accepts an inner_data Map or JSON Object, and instead of making
-//! a whole HashMap for the data, the key/value pairs are simply collected into a Vec.
+//! a HashMap for the data, the key/value pairs are simply collected into a Vec.
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(collections))]
 #![deny(missing_docs)]
@@ -102,7 +100,7 @@ where
 
 /// Deserialize to a Vec<(K, V)> as if it were a HashMap<K, V>.
 ///
-/// This directly deserializes into the returned vec, with no hashmap intermediate.
+/// This directly deserializes into the returned vec.
 pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
 where
     D: Deserializer<'de>,

@@ -5,30 +5,26 @@ serde-tuple-vec-map
 
 Deserialize maps or JSON objects in [serde] to a vec of tuples rather than a HashMap for when you're only ever going to iterate over the result.
 
-Don't waste space and time making a whole HashMap when you will never use it!
-
-To use, instead of:
+Usage:
 
 ```rust
+// replace this:
 #[derive(Serialize, Deserialize)]
 struct MyStuff {
-    data: HashMap<String, ValueType>,
+    data: HashMap<KeyType, ValueType>,
 }
 
-```
-
-You can write:
-
-```rust
+// with this:
 #[derive(Serialize, Deserialize)]
 struct MyStuff {
     #[serde(with = "tuple_vec_map")]
-    data: Vec<(String, ValueType)>,
+    data: Vec<(ValueType, ValueType)>,
 }
 ```
 
-Similar to [serde], serde-tuple-vec-map supports the use of `no_std` with `collections::Vec`.
-To enable this, simply depend on `serde-tuple-vec-map` with `default-features = false`.
+The serialized format remains exactly the same, the only difference is in how the data is stored.
+
+serde-tuple-vec-map supports no_std builds by use of collections::Vec. If you're on nightly rust, you can enable this with default-features=false.
 
 Full usage example in `tests/integration.rs`, documentation at https://docs.rs/serde-tuple-vec-map.
 
