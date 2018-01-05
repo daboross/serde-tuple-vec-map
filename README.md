@@ -18,7 +18,7 @@ struct MyStuff {
 #[derive(Serialize, Deserialize)]
 struct MyStuff {
     #[serde(with = "tuple_vec_map")]
-    data: Vec<(ValueType, ValueType)>,
+    data: Vec<(KeyType, ValueType)>,
 }
 ```
 
