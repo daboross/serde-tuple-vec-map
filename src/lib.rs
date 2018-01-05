@@ -23,6 +23,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(collections))]
 #![deny(missing_docs)]
+#![doc(html_root_url = "https://docs.rs/serde-tuple-vec-map/0.2.0")]
 
 extern crate serde;
 

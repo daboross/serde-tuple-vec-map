@@ -1,17 +1,22 @@
 [package]
 name = "serde-tuple-vec-map"
+# Remember to update html_root_url in src/lib.rs with each version.
 version = "0.2.0"
 authors = ["David Ross <daboross@daboross.net>"]
 description = "Deserialize a serialized map to Vec<(K, V)> using serde"
 
-documentation = "http://dabo.guru/rust/tuple-vec-map/"
+documentation = "https://docs.rs/tuple-vec-map/"
 repository = "https://github.com/daboross/serde-tuple-vec-map/"
-
 readme = "README.md"
 
-keywords = ["serde", "map", "vec", "array", "tuple"]
-categories = ["encoding"]
 license = "MIT"
+keywords = ["serde", "vec", "hashmap"]
+categories = ["encoding"]
+
+include = ["Cargo.toml", "src/**/*", "tests/**/*", "examples/**/*", "LICENSE", "README.md"]
+
+[badges]
+travis-ci = { repository = "daboross/serde-tuple-vec-map" }
 
 [lib]
 name = "tuple_vec_map"
