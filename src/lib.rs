@@ -19,14 +19,13 @@
 //! That's it! Now your structure accepts an inner_data Map or JSON Object, and instead of making
 //! a HashMap for the data, the key/value pairs are simply collected into a Vec.
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(not(feature = "std"), feature(collections))]
 #![deny(missing_docs)]
 #![doc(html_root_url = "https://docs.rs/serde-tuple-vec-map/0.2.1")]
 
 extern crate serde;
 
 #[cfg(not(feature = "std"))]
-extern crate collections;
+extern crate alloc;
 
 #[cfg(feature = "std")]
 mod core {
@@ -43,7 +42,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde::de::{MapAccess, Visitor};
 
 #[cfg(not(feature = "std"))]
-use collections::Vec;
+use alloc::vec::Vec;
 
 struct TupleVecMapVisitor<K, V> {
     marker: PhantomData<Vec<(K, V)>>,
