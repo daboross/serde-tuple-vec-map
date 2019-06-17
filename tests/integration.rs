@@ -15,7 +15,11 @@ extern crate tuple_vec_map;
 use serde::Deserialize;
 
 #[cfg(not(feature = "std"))]
-use alloc::{borrow::ToOwned, string::String, vec, vec::Vec};
+use alloc::borrow::ToOwned;
+#[cfg(not(feature = "std"))]
+use alloc::string::String;
+#[cfg(not(feature = "std"))]
+use alloc::vec::{self, Vec};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 struct TestData {
