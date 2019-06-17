@@ -36,16 +36,16 @@ extern crate alloc;
 #[cfg(feature = "std")]
 mod core {
     // this mirrors serde's setup for std/non-std.
-    pub use std::marker;
     pub use std::cmp;
     pub use std::fmt;
+    pub use std::marker;
 }
 
 use core::marker::PhantomData;
 use core::{cmp, fmt};
 
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde::de::{MapAccess, Visitor};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
