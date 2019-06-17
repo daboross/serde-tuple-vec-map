@@ -15,9 +15,13 @@ matrix:
     script:
     - cargo build --verbose
     - cargo test --verbose
-  - rust:
-    - beta
-    - nightly
+  - rust: beta
+    script:
+    - cargo build --verbose
+    - cargo test --verbose
+    - cargo build --verbose --no-default-features
+    - cargo test --verbose --no-default-features
+  - rust: nightly
     script:
     - cargo build --verbose
     - cargo test --verbose
