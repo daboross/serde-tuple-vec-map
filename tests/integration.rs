@@ -1,5 +1,4 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(not(feature = "std"), feature(collections))]
 
 #[macro_use]
 extern crate serde_derive;
@@ -7,8 +6,7 @@ extern crate serde_derive;
 extern crate serde_json;
 
 #[cfg(not(feature = "std"))]
-#[macro_use]
-extern crate collections;
+extern crate alloc;
 
 extern crate serde;
 
@@ -17,9 +15,7 @@ extern crate tuple_vec_map;
 use serde::Deserialize;
 
 #[cfg(not(feature = "std"))]
-use collections::{String, Vec};
-#[cfg(not(feature = "std"))]
-use collections::borrow::ToOwned;
+use alloc::{string::String, vec, vec::Vec, borrow::ToOwned};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 struct TestData {
