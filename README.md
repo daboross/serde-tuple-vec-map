@@ -24,7 +24,7 @@ struct MyStuff {
 
 The serialized format remains exactly the same, the only difference is in how the data is stored.
 
-serde-tuple-vec-map supports no_std builds by use of alloc::Vec. If you're on nightly rust, you can enable this with default-features=false.
+serde-tuple-vec-map supports no_std builds by using `Vec` defined in the `alloc` crate. If you're on rust 1.36.0 or newer, you can enable this with default-features=false.
 
 Full usage example in `tests/integration.rs`, documentation at https://docs.rs/serde-tuple-vec-map.
 

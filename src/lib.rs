@@ -16,8 +16,14 @@
 //! }
 //! # fn main() {}
 //! ```
+//!
 //! That's it! Now your structure accepts an inner_data Map or JSON Object, and instead of making
 //! a HashMap for the data, the key/value pairs are simply collected into a Vec.
+//!
+//! ## Features
+//!
+//! To use without `std`, depend on `serde-tuple-vec-map` with `default-features = false`. This will still
+//! depend on the `alloc` crate, and requires Rust 1.36.0 or newer.
 #![cfg_attr(not(feature = "std"), no_std)]
 #![deny(missing_docs)]
 #![doc(html_root_url = "https://docs.rs/serde-tuple-vec-map/0.2.1")]

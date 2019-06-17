@@ -1,14 +1,25 @@
 language: rust
 sudo: false
-rust:
-- stable
-- beta
-- nightly
 cache: cargo
-script:
-- cargo build --verbose
-- cargo test --verbose "${CARGO_ARGS[@]}"
 matrix:
   include:
-  - rust: nightly
-    env: CARGO_ARGS=("--no-default-features")
+  - rust: 1.13.0
+    script:
+    # packages used by our tests only support rust 1.15.0+
+    - cargo build --verbose
+  - rust: 1.15.0
+    script:
+    - cargo build --verbose
+    - cargo test --verbose
+  - rust: stable
+    script:
+    - cargo build --verbose
+    - cargo test --verbose
+  - rust:
+    - beta
+    - nightly
+    script:
+    - cargo build --verbose
+    - cargo test --verbose
+    - cargo build --verbose --no-default-features
+    - cargo test --verbose --no-default-features
