@@ -19,7 +19,9 @@ use alloc::borrow::ToOwned;
 #[cfg(not(feature = "std"))]
 use alloc::string::String;
 #[cfg(not(feature = "std"))]
-use alloc::vec::{self, Vec};
+use alloc::vec;
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 struct TestData {
