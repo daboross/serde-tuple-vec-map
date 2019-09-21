@@ -5,16 +5,25 @@ matrix:
   include:
   - rust: 1.13.0
     script:
-    # packages used by our tests only support rust 1.15.0+
+    # packages used by our tests only support rust 1.32.0+
     - cargo build --verbose
-  - rust: 1.15.0
+  - rust: 1.32.0
     script:
     - cargo build --verbose
     - cargo test --verbose
+    # no-default-features requires rust 1.36.0+
+  - rust: 1.36.0
+    script:
+    - cargo build --verbose
+    - cargo test --verbose
+    - cargo build --verbose --no-default-features
+    - cargo test --verbose --no-default-features
   - rust: stable
     script:
     - cargo build --verbose
     - cargo test --verbose
+    - cargo build --verbose --no-default-features
+    - cargo test --verbose --no-default-features
   - rust: beta
     script:
     - cargo build --verbose
