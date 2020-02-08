@@ -9,7 +9,6 @@ extern crate serde_json;
 extern crate alloc;
 
 extern crate serde;
-
 extern crate tuple_vec_map;
 
 use serde::Deserialize;
@@ -30,7 +29,7 @@ struct TestData {
 }
 
 #[test]
-fn deserialize_some_data() {
+fn test_deserialization() {
     let data = json!({
         "score": {
             "user1": 50,
@@ -42,8 +41,7 @@ fn deserialize_some_data() {
 
     let deserialized = TestData::deserialize(data).expect("expected successful deserialization");
 
-    // Note: This also tests that the data is kept in the same order as in the JSON.
-    // I *think* that's what we want to do...
+    // Note: This also tests that order is maintained.
     assert_eq!(
         deserialized,
         TestData {
@@ -58,7 +56,7 @@ fn deserialize_some_data() {
 }
 
 #[test]
-fn serialize_it_back_up() {
+fn test_serialization() {
     let data = TestData {
         score: vec![
             ("a_guy".to_owned(), 200),
