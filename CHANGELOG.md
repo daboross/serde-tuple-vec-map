@@ -2,6 +2,14 @@ Unreleased
 ==========
 
 
+1.0.0 (2019-02-08)
+==================
+
+- Add support for serializing from (but not deserializing to) `&[(K, V)]`
+- Specify more exact behavior in documentation
+- Migrate from git tag messages to an explicit CHANGELOG.md file
+
+
 0.2.2 (2019-02-08)
 ==================
 

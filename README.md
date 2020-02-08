@@ -32,7 +32,7 @@ crate. If you're on rust 1.36.0 or newer, you can enable this with
 
 ```toml
 [dependencies.serde-tuple-vec-map]
-version = "0.2"
+version = "1"
 default-features = false
 ```
 
@@ -49,4 +49,4 @@ https://docs.rs/serde-tuple-vec-map.
 [serde]: https://github.com/serde-rs/serde/
 [cratesio-badge]: http://meritbadge.herokuapp.com/serde-tuple-vec-map
 [cratesio-page]: https://crates.io/crates/serde-tuple-vec-map
-[example]: https://github.com/daboross/serde-tuple-vec-map/blob/0.2.2/tests/integration.rs
+[example]: https://github.com/daboross/serde-tuple-vec-map/blob/1.0.0/tests/integration.rs
