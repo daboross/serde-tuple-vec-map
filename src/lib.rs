@@ -100,7 +100,7 @@ where
     K: Serialize,
     V: Serialize,
 {
-    serializer.collect_map(data.into_iter().map(|x| (&x.0, &x.1)))
+    serializer.collect_map(data.iter().map(|x| (&x.0, &x.1)))
 }
 
 /// Deserialize to a Vec<(K, V)> as if it were a HashMap<K, V>.
