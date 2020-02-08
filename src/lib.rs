@@ -93,14 +93,14 @@ where
     }
 }
 
-/// Serialize a `Vec<(K, V)>` as if it were a `HashMap<K, V>`.
+/// Serialize an array of `(K, V)` pairs as if it were a `HashMap<K, V>`.
 ///
 /// In formats where dictionaries are ordered, this maintains the input data's order. Each pair is treated as a single
 /// entry into the dictionary.
 ///
 /// Behavior when duplicate keys are present in the data is unspecified and serializer-dependent. This function does
 /// not check for duplicate keys and will not warn the serializer.
-pub fn serialize<K, V, S>(data: &Vec<(K, V)>, serializer: S) -> Result<S::Ok, S::Error>
+pub fn serialize<K, V, S>(data: &[(K, V)], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
     K: Serialize,

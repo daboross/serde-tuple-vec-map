@@ -78,3 +78,21 @@ fn test_serialization() {
         })
     );
 }
+
+#[test]
+fn serializing_from_slice_works() {
+    #[derive(Serialize)]
+    struct Data<'a> {
+        #[serde(with = "tuple_vec_map")]
+        inner: &'a [(&'a str, &'a str)],
+    }
+
+    let data = Data { inner: &[("answer", "fourty-two")] };
+
+    let ser = serde_json::to_value(data).unwrap();
+    assert_eq!(ser, json!({
+        "inner": {
+            "answer": "fourty-two",
+        }
+    }));
+}
