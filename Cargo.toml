@@ -13,7 +13,7 @@ license = "MIT"
 keywords = ["serde", "vec", "hashmap"]
 categories = ["encoding"]
 
-include = ["Cargo.toml", "src/**/*", "tests/**/*", "examples/**/*", "LICENSE", "README.md"]
+include = ["Cargo.toml", "src/**/*", "tests/**/*", "examples/**/*", "LICENSE", "README.md", "CHANGELOG.md"]
 
 [lib]
 name = "tuple_vec_map"
