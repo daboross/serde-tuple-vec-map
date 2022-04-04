@@ -26,7 +26,7 @@
 //! depend on the `alloc` crate, and requires Rust 1.36.0 or newer.
 #![cfg_attr(not(feature = "std"), no_std)]
 #![deny(missing_docs)]
-#![doc(html_root_url = "https://docs.rs/serde-tuple-vec-map/1.0.0")]
+#![doc(html_root_url = "https://docs.rs/serde-tuple-vec-map/1.0.1")]
 
 extern crate serde;
 

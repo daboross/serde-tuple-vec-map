@@ -49,4 +49,4 @@ https://docs.rs/serde-tuple-vec-map.
 [serde]: https://github.com/serde-rs/serde/
 [cratesio-badge]: http://meritbadge.herokuapp.com/serde-tuple-vec-map
 [cratesio-page]: https://crates.io/crates/serde-tuple-vec-map
-[example]: https://github.com/daboross/serde-tuple-vec-map/blob/1.0.0/tests/integration.rs
+[example]: https://github.com/daboross/serde-tuple-vec-map/blob/1.0.1/tests/integration.rs

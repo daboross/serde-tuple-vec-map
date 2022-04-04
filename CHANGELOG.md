@@ -2,6 +2,13 @@ Unreleased
 ==========
 
 
+1.0.1 (2022-04-04)
+==================
+
+- Fix typo in vec initialization code which limited Vec pre-allocation
+  size to 4069, rather than 4096 as was intended.
+
+
 1.0.0 (2019-02-08)
 ==================
 
