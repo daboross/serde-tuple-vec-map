@@ -83,7 +83,7 @@ where
     where
         T: MapAccess<'de>,
     {
-        let mut values = Vec::with_capacity(cmp::min(access.size_hint().unwrap_or(0), 4069));
+        let mut values = Vec::with_capacity(cmp::min(access.size_hint().unwrap_or(0), 4096));
 
         while let Some((key, value)) = access.next_entry()? {
             values.push((key, value));
