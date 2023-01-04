@@ -87,12 +87,17 @@ fn serializing_from_slice_works() {
         inner: &'a [(&'a str, &'a str)],
     }
 
-    let data = Data { inner: &[("answer", "fourty-two")] };
+    let data = Data {
+        inner: &[("answer", "fourty-two")],
+    };
 
     let ser = serde_json::to_value(data).unwrap();
-    assert_eq!(ser, json!({
-        "inner": {
-            "answer": "fourty-two",
-        }
-    }));
+    assert_eq!(
+        ser,
+        json!({
+            "inner": {
+                "answer": "fourty-two",
+            }
+        })
+    );
 }
