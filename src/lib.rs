@@ -39,9 +39,12 @@ mod core {
     pub use std::cmp;
     pub use std::fmt;
     pub use std::marker;
+    pub use std::ops;
 }
 
+use core::fmt::Debug;
 use core::marker::PhantomData;
+use core::ops::Deref;
 use core::{cmp, fmt};
 
 use serde::de::{MapAccess, Visitor};
@@ -121,4 +124,114 @@ where
     V: Deserialize<'de>,
 {
     deserializer.deserialize_map(TupleVecMapVisitor::new())
+}
+
+/// Vec-as-map serialization wrapper.
+///
+/// This is intended when tuple_vec_map behavior is required for the outermost serialized or deserialized object.
+///
+/// While [`Wrapper`] can be constructed with any inner value, it only implements useful traits when the inner value is
+/// either `Vec<(K, V)>` or `&[(K, V)]` for some `K` and `V`. Thus, utility methods [`Wrapper::from_slice`] and
+/// [`Wrapper::from_vec`] have been created for convenient type-error-free construction.
+///
+/// # Serialization
+///
+/// If `&T` implements [`IntoIterator<Target=&(K, V)>`], then `&Wrapper<T>` will implement [`Serialize`],
+/// serializing the data as if it were a [`HashMap<K, V>`][std::collections::HashMap].
+///
+/// In formats where dictionaries are ordered, this maintains the input data's order. Each pair is treated as a single
+/// entry into the dictionary.
+///
+/// Behavior when duplicate keys are present in the data is unspecified and serializer-dependent. This function does
+/// not check for duplicate keys and will not warn the serializer.
+///
+/// ## Example
+///
+/// ```
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// let data = [("hello", "world"), ("answer", "42")];
+/// let out = serde_json::to_string(&tuple_vec_map::Wrapper::from_slice(&data))?;
+/// assert_eq!(out, r#"{"hello":"world","answer":"42"}"#);
+/// # Ok(()) }
+/// ```
+///
+/// # Deserialization
+///
+/// [`Wrapper<Vec<(K, V)>>`] implements [`Deserialize`], deserializing from a map as if it were a [`HashMap<K, V>`].
+///
+/// This directly deserializes into the wrapped vec with no intermediate allocation.
+///
+/// In formats where dictionaries are ordered, this maintains the input data's order.
+///
+/// ## Example
+///
+/// ```
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// let data = r#"{"hello": "world", "answer": "42"}"#;
+/// let out: tuple_vec_map::Wrapper<Vec<(String, String)>> = serde_json::from_str(data)?;
+/// assert_eq!(out.into_inner(), vec![("hello".to_owned(), "world".to_owned()), ("answer".to_owned(), "42".to_owned())]);
+/// # Ok(()) }
+/// ```
+///
+/// # repr(transparent)
+///
+/// `Wrapper` is specified to be `#[repr(transparent)]`. Thus, you can transmute `T` and `Wrapper<T>`.
+#[derive(Clone, Copy)]
+#[repr(transparent)]
+pub struct Wrapper<T>(pub T);
+
+impl<'a, K, V> Wrapper<&'a [(K, V)]> {
+    /// Creates a wrapper from the given slice.
+    pub fn from_slice(slice: &'a [(K, V)]) -> Self {
+        Wrapper(slice)
+    }
+}
+
+impl<K, V> Wrapper<Vec<(K, V)>> {
+    /// Creates a wrapper from the given [`Vec`].
+    pub fn from_vec(vec: Vec<(K, V)>) -> Self {
+        Wrapper(vec)
+    }
+}
+
+impl<T> Wrapper<T> {
+    /// Takes the inner value out of this [`Wrapper`].
+    pub fn into_inner(self) -> T {
+        self.0
+    }
+}
+
+impl<T: Debug> Debug for Wrapper<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl<'a, T, K, V> Serialize for Wrapper<T>
+where
+    T: Deref<Target = [(K, V)]>,
+    K: 'a + Serialize,
+    V: 'a + Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.collect_map(self.0.into_iter().map(|x| (&x.0, &x.1)))
+    }
+}
+
+impl<'de, K, V> Deserialize<'de> for Wrapper<Vec<(K, V)>>
+where
+    K: Deserialize<'de>,
+    V: Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer
+            .deserialize_map(TupleVecMapVisitor::new())
+            .map(Wrapper)
+    }
 }
