@@ -172,12 +172,7 @@ where
 /// assert_eq!(out.into_inner(), vec![("hello".to_owned(), "world".to_owned()), ("answer".to_owned(), "42".to_owned())]);
 /// # Ok(()) }
 /// ```
-///
-/// # repr(transparent)
-///
-/// `Wrapper` is specified to be `#[repr(transparent)]`. Thus, you can transmute `T` and `Wrapper<T>`.
 #[derive(Clone, Copy)]
-#[repr(transparent)]
 pub struct Wrapper<T>(pub T);
 
 impl<'a, K, V> Wrapper<&'a [(K, V)]> {
@@ -202,7 +197,7 @@ impl<T> Wrapper<T> {
 }
 
 impl<T: Debug> Debug for Wrapper<T> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt<'a>(&self, f: &mut fmt::Formatter<'a>) -> fmt::Result {
         self.0.fmt(f)
     }
 }
@@ -217,7 +212,7 @@ where
     where
         S: Serializer,
     {
-        serializer.collect_map(self.0.into_iter().map(|x| (&x.0, &x.1)))
+        serializer.collect_map(self.0.iter().map(|x| (&x.0, &x.1)))
     }
 }
 
