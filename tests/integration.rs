@@ -101,3 +101,53 @@ fn serializing_from_slice_works() {
         })
     );
 }
+
+#[test]
+fn serializing_raw() {
+    let data: &[(&str, &str)] = &[("answer", "fourty-two")];
+
+    let ser = serde_json::to_value(tuple_vec_map::Wrapper(data)).unwrap();
+    assert_eq!(
+        ser,
+        json!({
+            "answer": "fourty-two",
+        })
+    );
+}
+
+#[test]
+fn wrapper_round_trip() {
+    // this works, and should be equivalent to `#[serde(with = "tuple_vec_map")]`. With that said, this should be
+    // considered an anti-pattern in real code, with `#[serde(with = "tuple_vec_map")]` preferred when possible.
+
+    #[derive(Serialize, Deserialize, Debug)]
+    struct TestDataUsingWrapper {
+        score: tuple_vec_map::Wrapper<Vec<(String, u32)>>,
+    }
+
+    let data = json!({
+        "score": {
+            "user1": 50,
+            "user2": 30,
+            "user3": 0,
+            "user4": 100,
+        }
+    });
+
+    let deserialized = TestDataUsingWrapper::deserialize(data.clone())
+        .expect("expected successful deserialization");
+
+    // Note: This also tests that order is maintained.
+    assert_eq!(
+        &deserialized.score.0,
+        &[
+            ("user1".to_owned(), 50),
+            ("user2".to_owned(), 30),
+            ("user3".to_owned(), 0),
+            ("user4".to_owned(), 100),
+        ],
+    );
+
+    let reserialized = serde_json::to_value(deserialized).unwrap();
+    assert_eq!(reserialized, data);
+}
