@@ -3,7 +3,7 @@ name = "serde-tuple-vec-map"
 # Remember to update html_root_url in src/lib.rs with each version.
 version = "1.0.1"
 authors = ["David Ross <daboross@daboross.net>"]
-description = "Deserialize a serialized map to a Vec<(K, V)> in serde"
+description = "Serialize and deserialize Vec<(K, V)> as if it were a map in serde"
 
 documentation = "https://docs.rs/tuple-vec-map/"
 repository = "https://github.com/daboross/serde-tuple-vec-map/"
@@ -22,12 +22,6 @@ path = "src/lib.rs"
 [features]
 std = []
 default = ["std"]
-
-[badges]
-travis-ci = { repository = "daboross/serde-tuple-vec-map" }
-is-it-maintained-issue-resolution = { repository = "daboross/serde-tuple-vec-map" }
-is-it-maintained-open-issues = { repository = "daboross/serde-tuple-vec-map" }
-maintenance = { status = "passively-maintained" }
 
 [dependencies]
 serde = { version = "1.0", default-features = false }

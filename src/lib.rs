@@ -1,7 +1,7 @@
 //! Deserializing maps to tuple-vecs.
 //!
-//! To use, just include a `Vec<(String, ...)>` in your struct instead of a `HashMap<String, ...>`
-//! and tag it with `#[serde(with = "tuple_vec_map")`:
+//! To use, just include a [`Vec<(String, ...)>`][Vec] in your struct instead of a
+//! [`HashMap<String, ...>`][std::collections::HashMap] and tag it with `#[serde(with = "tuple_vec_map")`:
 //!
 //! ```
 //! # extern crate serde;
@@ -18,7 +18,7 @@
 //! ```
 //!
 //! That's it! Now your structure accepts an inner_data Map or JSON Object, and instead of making
-//! a HashMap for the data, the key/value pairs are simply collected into a Vec.
+//! a [`HashMap`][std::collections::HashMap] for the data, the key/value pairs are simply collected into a [`vec`].
 //!
 //! ## Features
 //!
@@ -58,7 +58,7 @@ struct TupleVecMapVisitor<K, V> {
 }
 
 impl<K, V> TupleVecMapVisitor<K, V> {
-    pub fn new() -> Self {
+    fn new() -> Self {
         TupleVecMapVisitor {
             marker: PhantomData,
         }
@@ -96,13 +96,17 @@ where
     }
 }
 
-/// Serialize an array of `(K, V)` pairs as if it were a `HashMap<K, V>`.
+/// Serialize a [`slice`] of `(K, V)` pairs as if it were a [`HashMap<K, V>`][std::collections::HashMap].
 ///
 /// In formats where dictionaries are ordered, this maintains the input data's order. Each pair is treated as a single
 /// entry into the dictionary.
 ///
 /// Behavior when duplicate keys are present in the data is unspecified and serializer-dependent. This function does
 /// not check for duplicate keys and will not warn the serializer.
+///
+/// # Errors
+///
+/// Errors if and only if the given serializer emits an error.
 pub fn serialize<K, V, S>(data: &[(K, V)], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
@@ -112,11 +116,16 @@ where
     serializer.collect_map(data.iter().map(|x| (&x.0, &x.1)))
 }
 
-/// Deserialize to a `Vec<(K, V)>` as if it were a `HashMap<K, V>`.
+/// Deserialize to a [`Vec<(K, V)>`] as if it were a [`HashMap<K, V>`][std::collections::HashMap].
 ///
 /// This directly deserializes into the returned vec with no intermediate allocation.
 ///
 /// In formats where dictionaries are ordered, this maintains the input data's order.
+///
+/// # Errors
+///
+/// Errors if and only if the given deserializer emits an error. Note, this may occur if using this function to
+/// deserialize data that the serializer can't treat as a map.
 pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
 where
     D: Deserializer<'de>,
@@ -128,7 +137,7 @@ where
 
 /// Vec-as-map serialization wrapper.
 ///
-/// This is intended when tuple_vec_map behavior is required for the outermost serialized or deserialized object.
+/// This is intended when `tuple_vec_map` behavior is required for the outermost serialized or deserialized object.
 ///
 /// While [`Wrapper`] can be constructed with any inner value, it only implements useful traits when the inner value is
 /// either `Vec<(K, V)>` or `&[(K, V)]` for some `K` and `V`. Thus, utility methods [`Wrapper::from_slice`] and
@@ -136,8 +145,13 @@ where
 ///
 /// # Serialization
 ///
-/// If `&T` implements [`IntoIterator<Target=&(K, V)>`], then `&Wrapper<T>` will implement [`Serialize`],
-/// serializing the data as if it were a [`HashMap<K, V>`][std::collections::HashMap].
+/// When `T` can be treated as `&[(K, V)]`, `Wrapper<T>` implements [`Serialize`], serializing the inner value as if it
+/// were a [`HashMap`][std::collections::HashMap].
+///
+/// As an example, this works for `Wrapper<&[(K, V)]>`, `Wrapper<Vec<(K, V)>>`, `Wrapper<[(K, V); N]>`, as well as
+/// other Vec-like types, such as `Wrapper<SmallVec<[(K, V); 4]>>` using
+/// [`SmallVec`](https://docs.rs/smallvec/latest/smallvec/struct.SmallVec.html) from the
+/// [`smallvec`](https://docs.rs/smallvec/) crate.
 ///
 /// In formats where dictionaries are ordered, this maintains the input data's order. Each pair is treated as a single
 /// entry into the dictionary.
@@ -157,7 +171,8 @@ where
 ///
 /// # Deserialization
 ///
-/// [`Wrapper<Vec<(K, V)>>`] implements [`Deserialize`], deserializing from a map as if it were a [`HashMap<K, V>`].
+/// `Wrapper<Vec<(K, V)>>` implements [`Deserialize`], deserializing from a map as if it were a
+/// [`HashMap<K, V>`][std::collections::HashMap].
 ///
 /// This directly deserializes into the wrapped vec with no intermediate allocation.
 ///
@@ -169,11 +184,20 @@ where
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// let data = r#"{"hello": "world", "answer": "42"}"#;
 /// let out: tuple_vec_map::Wrapper<Vec<(String, String)>> = serde_json::from_str(data)?;
-/// assert_eq!(out.into_inner(), vec![("hello".to_owned(), "world".to_owned()), ("answer".to_owned(), "42".to_owned())]);
+/// assert_eq!(
+///     out.into_inner(),
+///     vec![
+///         ("hello".to_owned(), "world".to_owned()),
+///         ("answer".to_owned(), "42".to_owned()),
+///     ],
+/// );
 /// # Ok(()) }
 /// ```
 #[derive(Clone, Copy)]
-pub struct Wrapper<T>(pub T);
+pub struct Wrapper<T>(
+    /// The inner value, either to be serialized or freshly deserialized.
+    pub T,
+);
 
 impl<'a, K, V> Wrapper<&'a [(K, V)]> {
     /// Creates a wrapper from the given slice.
@@ -184,6 +208,7 @@ impl<'a, K, V> Wrapper<&'a [(K, V)]> {
 
 impl<K, V> Wrapper<Vec<(K, V)>> {
     /// Creates a wrapper from the given [`Vec`].
+    #[must_use]
     pub fn from_vec(vec: Vec<(K, V)>) -> Self {
         Wrapper(vec)
     }
