@@ -58,7 +58,7 @@ struct TupleVecMapVisitor<K, V> {
 }
 
 impl<K, V> TupleVecMapVisitor<K, V> {
-    pub fn new() -> Self {
+    fn new() -> Self {
         TupleVecMapVisitor {
             marker: PhantomData,
         }
@@ -103,6 +103,10 @@ where
 ///
 /// Behavior when duplicate keys are present in the data is unspecified and serializer-dependent. This function does
 /// not check for duplicate keys and will not warn the serializer.
+///
+/// # Errors
+///
+/// Errors if and only if the given serializer emits an error.
 pub fn serialize<K, V, S>(data: &[(K, V)], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
@@ -117,6 +121,11 @@ where
 /// This directly deserializes into the returned vec with no intermediate allocation.
 ///
 /// In formats where dictionaries are ordered, this maintains the input data's order.
+///
+/// # Errors
+///
+/// Errors if and only if the given deserializer emits an error. Note, this may occur if using this function to
+/// deserialize data that the serializer can't treat as a map.
 pub fn deserialize<'de, K, V, D>(deserializer: D) -> Result<Vec<(K, V)>, D::Error>
 where
     D: Deserializer<'de>,
@@ -128,7 +137,7 @@ where
 
 /// Vec-as-map serialization wrapper.
 ///
-/// This is intended when tuple_vec_map behavior is required for the outermost serialized or deserialized object.
+/// This is intended when `tuple_vec_map` behavior is required for the outermost serialized or deserialized object.
 ///
 /// While [`Wrapper`] can be constructed with any inner value, it only implements useful traits when the inner value is
 /// either `Vec<(K, V)>` or `&[(K, V)]` for some `K` and `V`. Thus, utility methods [`Wrapper::from_slice`] and
@@ -199,6 +208,7 @@ impl<'a, K, V> Wrapper<&'a [(K, V)]> {
 
 impl<K, V> Wrapper<Vec<(K, V)>> {
     /// Creates a wrapper from the given [`Vec`].
+    #[must_use]
     pub fn from_vec(vec: Vec<(K, V)>) -> Self {
         Wrapper(vec)
     }
